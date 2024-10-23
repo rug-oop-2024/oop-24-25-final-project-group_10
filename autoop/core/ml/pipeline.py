@@ -11,10 +11,10 @@ import numpy as np
 
 
 class Pipeline():
-    
-    def __init__(self, 
+
+    def __init__(self,
                  metrics: List[Metric],
-                 dataset: Dataset, 
+                 dataset: Dataset,
                  model: Model,
                  input_features: List[Feature],
                  target_feature: Feature,
@@ -114,11 +114,26 @@ Pipeline(
         self._preprocess_features()
         self._split_data()
         self._train()
-        self._evaluate()
-        return {
-            "metrics": self._metrics_results,
-            "predictions": self._predictions,
-        }
-        
+        X_train = self._compact_vectors(self._train_X)
+        Y_train = self._train_y
+        train_metrics_results = []
+        train_predictions = self._model.predict(X_train)
 
-    
+        for metric in self._metrics:
+            result = metric.evaluate(train_predictions, Y_train)
+            train_metrics_results.append((f"train_{str(metric)}", result))
+
+        X_test = self._compact_vectors(self._test_X)
+        Y_test = self._test_y
+        test_metrics_results = []
+        test_predictions = self._model.predict(X_test)
+        for metric in self._metrics:
+            result = metric.evaluate(test_predictions, Y_test)
+            test_metrics_results.append((f"test_{str(metric)}", result))
+
+        return {
+            "train_metrics": train_metrics_results,
+            "test_metrics": test_metrics_results,
+            "train_predictions": train_predictions,
+            "test_predictions": test_predictions,
+        }
