@@ -106,6 +106,7 @@ Pipeline(
         self._metrics_results = []
         predictions = self._model.predict(X)
         for metric in self._metrics:
+            #should evaluate be _evaluate?
             result = metric.evaluate(predictions, Y)
             self._metrics_results.append((metric, result))
         self._predictions = predictions
@@ -120,6 +121,7 @@ Pipeline(
         train_predictions = self._model.predict(X_train)
 
         for metric in self._metrics:
+            #should evaluate be _evaluate?
             result = metric.evaluate(train_predictions, Y_train)
             train_metrics_results.append((f"train_{str(metric)}", result))
 
@@ -128,6 +130,7 @@ Pipeline(
         test_metrics_results = []
         test_predictions = self._model.predict(X_test)
         for metric in self._metrics:
+            #should evaluate be _evaluate?
             result = metric.evaluate(test_predictions, Y_test)
             test_metrics_results.append((f"test_{str(metric)}", result))
 
