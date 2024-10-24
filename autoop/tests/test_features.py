@@ -6,6 +6,7 @@ from autoop.core.ml.dataset import Dataset
 from autoop.core.ml.feature import Feature
 from autoop.functional.feature import detect_feature_types
 
+
 class TestFeatures(unittest.TestCase):
 
     def setUp(self) -> None:
