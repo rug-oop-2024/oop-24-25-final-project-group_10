@@ -43,6 +43,8 @@ class Metric(ABC):
     """
     Base class for all metrics.
     """
+    def evaluate(self, prediction: np.ndarray, ground_truth: np.ndarray) -> float:
+        return self(ground_truth, prediction)
 
     @abstractmethod
     def __call__(self,

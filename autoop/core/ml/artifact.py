@@ -31,3 +31,8 @@ class Artifact(BaseModel):
             f"Artifact(asset_path={self.asset_path}, version={self.version}, "
             f"type={self.type})"
         )
+
+    def read(self) -> bytes:
+        if self.data is None:
+            raise ValueError("No data available to read.")
+        return self.data

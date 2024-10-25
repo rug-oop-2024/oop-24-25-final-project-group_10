@@ -8,7 +8,7 @@ from autoop.core.ml.dataset import Dataset
 
 class Feature(BaseModel):
     name: str = Field(..., title="Name of the feature")
-    feature_type: Literal["numerical", "categorical"] = Field(
+    type: Literal["numerical", "categorical"] = Field(
         ..., title="Type of the feature"
     )
 

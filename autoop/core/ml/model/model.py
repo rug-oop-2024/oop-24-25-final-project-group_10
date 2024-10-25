@@ -78,3 +78,11 @@ class Model(ABC):
     def __str__(self):
         """String representation of the model."""
         return f"Model(type={self._type}, is_fitted={self._is_fitted})"
+    
+    @property
+    def parameters(self):
+        """Returns the model's parameters (coefficients and intercept)."""
+        return {
+            "coefficients": self._model.coef_,
+            "intercept": self._model.intercept_
+        }
