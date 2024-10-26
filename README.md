@@ -154,15 +154,15 @@ If you did not implement the feature
 | Requirement                           | Type (FN/NF) | Implemented by       | Implementation Completed (add X if done) | Comment |
 |-------------------------------------- |--------------|----------------------|--------------------------|---------|         
 | Up-to-date requirements.txt           | NF           |                      |         | |
-| `ML/detect-features`                  | FN           |                      |         | |
-| `ML/artifact`                         | NF           |                      |         | |
-| `ML/feature`                          | NF           |                      |         | |
-| `ML/metric`                           | NF           |                      |         | |
-| `ML/metric/extensions`                | FN           |                      |         | |
-| `ML/model`                            | NF           |                      |         | |
-| `ML/model/extensions`                 | FN           |                      |         | |
-| `ML/pipeline/evaluation`              | FN           |                      |         | | 
-| `ST/page/datasets`                    | NF           |                      |         | |
+| `ML/detect-features`                  | FN           |Both                      |X         | |
+| `ML/artifact`                         | NF           |Both                      |X         | |
+| `ML/feature`                          | NF           |Both                      |X         | |
+| `ML/metric`                           | NF           |Both                      |X         | |
+| `ML/metric/extensions`                | FN           |Both                      |X         | |
+| `ML/model`                            | NF           |Both                      |X         | |
+| `ML/model/extensions`                 | FN           |Both                      |X         | |
+| `ML/pipeline/evaluation`              | FN           |Both                      |X         | | 
+| `ST/page/datasets`                    | NF           |Both                      |X         | |
 | `ST/datasets/management/create`       | FN           |                      |         | |
 | `ST/datasets/management/save`         | FN           |                      |         | |
 | `ST/page/modelling`                   | NF           |                      |         | |
