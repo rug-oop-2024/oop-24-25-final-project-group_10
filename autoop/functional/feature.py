@@ -1,8 +1,8 @@
 from typing import List
 import pandas as pd
+from io import BytesIO
 from autoop.core.ml.dataset import Dataset
 from autoop.core.ml.feature import Feature
-# implemented
 
 
 def detect_feature_types(dataset: Dataset) -> List[Feature]:
@@ -15,17 +15,15 @@ def detect_feature_types(dataset: Dataset) -> List[Feature]:
     List[Feature]:
     A list of Feature objects with their name and detected type.
     """
-    feature_list = []
-
     data = dataset.read()
-
+    features = []
+    # check if the data is in bytes format
+    if isinstance(data, bytes):
+        data = pd.read_csv(BytesIO(data))
     for column in data.columns:
-        if pd.api.types.is_numeric_dtype(data[column]):
-            feature_type = "numerical"
-        else:
+        if data[column].dtype == "object":
             feature_type = "categorical"
-
-        feature = Feature(name=column, type=feature_type)
-        feature_list.append(feature)
-
-    return feature_list
+        else:
+            feature_type = "numerical"
+        features.append(Feature(name=column, type=feature_type))
+    return features
