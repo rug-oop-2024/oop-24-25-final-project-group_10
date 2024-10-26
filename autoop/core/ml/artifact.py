@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
 import base64
 
+
 class Artifact(BaseModel):
     name: str = Field(..., title="Name of the artifact")
     asset_path: str = Field(..., title="Path to the asset")
@@ -12,18 +13,16 @@ class Artifact(BaseModel):
     tags: List[str] = Field([], title="Tags for categorization")
 
     def __init__(self, **kwargs):
-        # Set 'name' from metadata if not directly provided
-        if 'name' not in kwargs:
-            kwargs['name'] = kwargs.get('metadata', {}).get('name', 'Unnamed')
         super().__init__(**kwargs)
 
     @property
     def id(self) -> str:
         """
         Generate a unique ID for the artifact based on asset_path and version.
+        Append `.json` to ensure compatibility with expected file format.
         """
         encoded_path = base64.b64encode(self.asset_path.encode()).decode()
-        return f"{encoded_path}:{self.version}"
+        return f"{encoded_path}_{self.version}.json"
 
     def __str__(self) -> str:
         """String representation of the artifact."""

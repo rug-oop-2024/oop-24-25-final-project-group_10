@@ -31,7 +31,7 @@ if dataset_file is not None:
         data=dataframe,
         asset_path=asset_path,
         name=dataset_name,  # Provide the name as required
-        version="1.0.0"  # Specify version if required by Dataset
+        version="1.0.0",  # Specify version if required by Dataset
     )
     
     # Save the dataset artifact using the AutoML system's artifact registry
@@ -42,3 +42,12 @@ if dataset_file is not None:
         st.success(f"Dataset '{dataset_name}' has been successfully saved.")
 else:
     st.info("Please upload a CSV file to create a new dataset.")
+
+# Section for listing existing datasets
+st.header("Existing datasets")
+datasets = automl.registry.list(type="dataset")
+if len(datasets) == 0:
+    st.info("No datasets found.")
+else:
+    for dataset in datasets:
+        st.write(f"**{dataset.name}** (Version: {dataset.version})")
