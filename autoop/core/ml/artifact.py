@@ -1,21 +1,21 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
 import base64
-# implemented
-
 
 class Artifact(BaseModel):
+    name: str = Field(..., title="Name of the artifact")
     asset_path: str = Field(..., title="Path to the asset")
     version: str = Field(..., title="Version of the asset")
     data: Optional[bytes] = Field(None, title="Binary data of the asset")
-    metadata: Dict[str, Any] = Field(
-        {}, title="Additional metadata related to the asset"
-    )
-    type: str = Field(
-        ...,
-        title="Type of the asset, e.g., 'model:torch', 'preprocessor:scaler'"
-    )
+    metadata: Dict[str, Any] = Field({}, title="Additional metadata related to the asset")
+    type: str = Field(..., title="Type of the asset, e.g., 'model:torch', 'preprocessor:scaler'")
     tags: List[str] = Field([], title="Tags for categorization")
+
+    def __init__(self, **kwargs):
+        # Set 'name' from metadata if not directly provided
+        if 'name' not in kwargs:
+            kwargs['name'] = kwargs.get('metadata', {}).get('name', 'Unnamed')
+        super().__init__(**kwargs)
 
     @property
     def id(self) -> str:
@@ -28,11 +28,17 @@ class Artifact(BaseModel):
     def __str__(self) -> str:
         """String representation of the artifact."""
         return (
-            f"Artifact(asset_path={self.asset_path}, version={self.version}, "
+            f"Artifact(name={self.name}, asset_path={self.asset_path}, version={self.version}, "
             f"type={self.type})"
         )
 
     def read(self) -> bytes:
+        """Read the binary data of the artifact."""
         if self.data is None:
             raise ValueError("No data available to read.")
         return self.data
+    
+    def save(self, data: bytes) -> bytes:
+        """Save the binary data of the artifact."""
+        self.data = data
+        return data
