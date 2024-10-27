@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
-METRICS = [
+REGRESSION_METRICS = [
     "mean_squared_error",
     "mean_absolute_error",
-    "root_mean_squared_error",
+    "root_mean_squared_error"
+]
+
+CLASSIFICATION_METRICS = [
     "accuracy",
     "precision",
     "recall"
@@ -21,22 +24,25 @@ def get_metric(name: str):
     Returns:
     Any: An object of the metric class.
     """
-    # regression metrics
-    if name == "mean_squared_error":
-        return MeanSquaredError()
-    elif name == "mean_absolute_error":
-        return MeanAbsoluteError()
-    elif name == "root_mean_squared_error":
-        return RootMeanSquaredError()
-    # classification metrics
-    elif name == "accuracy":
-        return Accuracy()
-    elif name == "precision":
-        return Precision()
-    elif name == "recall":
-        return Recall()
-    else:
-        raise ValueError(f"Unknown metric: {name}")
+    if name in REGRESSION_METRICS:
+        if name == "mean_squared_error":
+            return MeanSquaredError()
+
+        if name == "mean_absolute_error":
+            return MeanAbsoluteError()
+
+        if name == "root_mean_squared_error":
+            return RootMeanSquaredError()
+
+    if name in CLASSIFICATION_METRICS:
+        if name == "accuracy":
+            return Accuracy()
+
+        if name == "precision":
+            return Precision()
+
+        if name == "recall":
+            return Recall()
 
 
 class Metric(ABC):
