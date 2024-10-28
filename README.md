@@ -163,16 +163,16 @@ If you did not implement the feature
 | `ML/model/extensions`                 | FN           |Both                      |X         | |
 | `ML/pipeline/evaluation`              | FN           |Both                      |X         | | 
 | `ST/page/datasets`                    | NF           |Both                      |X         | |
-| `ST/datasets/management/create`       | FN           |                      |         | |
-| `ST/datasets/management/save`         | FN           |                      |         | |
-| `ST/page/modelling`                   | NF           |                      |         | |
-| `ST/modelling/datasets/list`          | FN           |                      |         | |
-| `ST/modelling/datasets/features`      | FN           |                      |         | |
-| `ST/modelling/models`                 | FN           |                      |         | |
-| `ST/modelling/pipeline/split`         | FN           |                      |         | |
-| `ST/modelling/pipeline/metrics`       | FN           |                      |         | |
-| `ST/modelling/pipeline/summary`       | FN           |                      |         | |
-| `ST/modelling/pipeline/train`         | FN           |                      |         | |
+| `ST/datasets/management/create`       | FN           |Both                      |         | |
+| `ST/datasets/management/save`         | FN           |Both                      |         | |
+| `ST/page/modelling`                   | NF           |Both                      |         | |
+| `ST/modelling/datasets/list`          | FN           |Both                      |         | |
+| `ST/modelling/datasets/features`      | FN           |Both                      |         | |
+| `ST/modelling/models`                 | FN           |Both                      |         | |
+| `ST/modelling/pipeline/split`         | FN           |Both                      |         | |
+| `ST/modelling/pipeline/metrics`       | FN           |Both                      |         | |
+| `ST/modelling/pipeline/summary`       | FN           |Both                      |         | |
+| `ST/modelling/pipeline/train`         | FN           |Almost complete classification metrics are wrong                      |         | |
 | `ST/modelling/pipeline/save`          | FN           |                      |         | |
 | `ST/page/deployment`                  | FN           |                      |         | |
 | `ST/deployment/load`                  | FN           |                      |         | |
