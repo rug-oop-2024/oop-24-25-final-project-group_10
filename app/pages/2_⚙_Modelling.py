@@ -37,7 +37,7 @@ else:
                              if dataset.name == selected_dataset_name), None)
 
     if selected_dataset:
-        st.write(f"**Dataset:** {selected_dataset.name}")
+        st.write(f"**Dataset:** {selected_dataset.name}", f"**Version:** {selected_dataset.version}", f"**path:** {selected_dataset.asset_path}")
         st.write(f"**Version:** {selected_dataset.version}")
         st.write(f"**path:** {selected_dataset.asset_path}")
 
