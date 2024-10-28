@@ -1,25 +1,24 @@
 from typing import List
 import pandas as pd
-from io import StringIO
 from autoop.core.ml.dataset import Dataset
 from autoop.core.ml.feature import Feature
 
+
 def detect_feature_types(dataset: Dataset) -> List[Feature]:
     """
-    Detects whether features in a dataset are categorical or numerical based on their content.
-    This function handles datasets read from CSV files with appropriate delimiters detected automatically.
+    Detects whether features in a dataset are categorical
+    or numerical based on their content.
+    This function handles datasets read from CSV files with appropriate
+    delimiters detected automatically.
 
     Args:
         dataset (Dataset): A Dataset object containing tabular data.
 
     Returns:
-        List[Feature]: A list of Feature objects with their name and detected type.
+        List[Feature]: A list of Feature objects with their name
+        and detected type.
     """
-    data = dataset.read()  # The read method is expected to handle the file read process and return a DataFrame.
-
-    # If data is in bytes format, decode and load into DataFrame with automatic delimiter detection
-    if isinstance(data, bytes):
-        data = pd.read_csv(StringIO(data.decode('utf-8')), delimiter=None, engine='python')
+    data = dataset.read()
 
     features = []
     for column in data.columns:

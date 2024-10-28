@@ -17,6 +17,10 @@ class KNN(Model):
     def fit(self, X, y):
         """
         Fits the KNN model to the training data.
+        
+        Args:
+            X: Feature matrix (n_samples, n_features)
+            y: Target values (n_samples,)
         """
         self._model.fit(X, y)
 
