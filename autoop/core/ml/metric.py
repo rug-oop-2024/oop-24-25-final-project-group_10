@@ -49,7 +49,12 @@ class Metric(ABC):
     """
     Base class for all metrics.
     """
-    def evaluate(self, prediction: np.ndarray, ground_truth: np.ndarray) -> float:
+    def evaluate(self,
+                 prediction: np.ndarray,
+                 ground_truth: np.ndarray) -> float:
+        """
+        Evaluates the metric based on ground truth and prediction.
+        """
         return self(ground_truth, prediction)
 
     @abstractmethod
@@ -184,7 +189,12 @@ class Precision(Metric):
         """
         true_positive = np.sum((ground_truth == 1) & (prediction == 1))
         false_positive = np.sum((ground_truth == 0) & (prediction == 1))
-        return true_positive / (true_positive + false_positive)
+        denominator = true_positive + false_positive
+
+        if denominator == 0:
+            return 0.0
+
+        return true_positive / denominator
 
 
 class Recall(Metric):
@@ -208,4 +218,9 @@ class Recall(Metric):
         """
         true_positive = np.sum((ground_truth == 1) & (prediction == 1))
         false_negative = np.sum((ground_truth == 1) & (prediction == 0))
-        return true_positive / (true_positive + false_negative)
+        denominator = true_positive + false_negative
+
+        if denominator == 0:
+            return 0.0
+
+        return true_positive / denominator

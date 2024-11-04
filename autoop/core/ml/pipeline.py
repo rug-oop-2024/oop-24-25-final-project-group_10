@@ -49,7 +49,8 @@ Pipeline(
 
     @property
     def artifacts(self) -> List[Artifact]:
-        """Used to get the artifacts generated during the pipeline execution to be saved
+        """
+        Used to get the artifacts generated during the pipeline execution to be saved
         """
         artifacts = []
         for name, artifact in self._artifacts.items():
@@ -67,30 +68,41 @@ Pipeline(
             "target_feature": self._target_feature,
             "split": self._split,
         }
-        artifacts.append(Artifact(name="pipeline_config", data=pickle.dumps(pipeline_data)))
-        artifacts.append(self._model.to_artifact(name=f"pipeline_model_{self._model.type}"))
+        artifacts.append(
+            Artifact(name="pipeline_config", data=pickle.dumps(pipeline_data)))
+        artifacts.append(
+            self._model.to_artifact(name=f"pipeline_model_{self._model.type}"))
         return artifacts
-    
+
     def _register_artifact(self, name: str, artifact):
         self._artifacts[name] = artifact
 
     def _preprocess_features(self):
-        (target_feature_name, target_data, artifact) = preprocess_features([self._target_feature], self._dataset)[0]
+        (target_feature_name, target_data, artifact) = preprocess_features(
+            [self._target_feature], self._dataset)[0]
         self._register_artifact(target_feature_name, artifact)
-        input_results = preprocess_features(self._input_features, self._dataset)
+        input_results = preprocess_features(self._input_features,
+                                            self._dataset)
         for (feature_name, data, artifact) in input_results:
             self._register_artifact(feature_name, artifact)
-        # Get the input vectors and output vector, sort by feature name for consistency
+        # Get the input vectors and output vector,
+        # sort by feature name for consistency
         self._output_vector = target_data
-        self._input_vectors = [data for (feature_name, data, artifact) in input_results]
+        self._input_vectors = [data
+                               for (feature_name, data, artifact)
+                               in input_results]
 
     def _split_data(self):
         # Split the data into training and testing sets
         split = self._split
-        self._train_X = [vector[:int(split * len(vector))] for vector in self._input_vectors]
-        self._test_X = [vector[int(split * len(vector)):] for vector in self._input_vectors]
-        self._train_y = self._output_vector[:int(split * len(self._output_vector))]
-        self._test_y = self._output_vector[int(split * len(self._output_vector)):]
+        self._train_X = [vector[:int(split * len(vector))]
+                         for vector in self._input_vectors]
+        self._test_X = [vector[int(split * len(vector)):]
+                        for vector in self._input_vectors]
+        self._train_y = self._output_vector[
+            :int(split * len(self._output_vector))]
+        self._test_y = self._output_vector[
+            int(split * len(self._output_vector)):]
 
     def _compact_vectors(self, vectors: List[np.array]) -> np.array:
         return np.concatenate(vectors, axis=1)
@@ -106,7 +118,7 @@ Pipeline(
         self._metrics_results = []
         predictions = self._model.predict(X)
         for metric in self._metrics:
-            #should evaluate be _evaluate?
+            # should evaluate be _evaluate?
             result = metric.evaluate(predictions, Y)
             self._metrics_results.append((metric, result))
         self._predictions = predictions
@@ -121,7 +133,7 @@ Pipeline(
         train_predictions = self._model.predict(X_train)
 
         for metric in self._metrics:
-            #should evaluate be _evaluate?
+            # should evaluate be _evaluate?
             result = metric.evaluate(train_predictions, Y_train)
             train_metrics_results.append((f"train_{str(metric)}", result))
 
@@ -130,7 +142,7 @@ Pipeline(
         test_metrics_results = []
         test_predictions = self._model.predict(X_test)
         for metric in self._metrics:
-            #should evaluate be _evaluate?
+            # should evaluate be _evaluate?
             result = metric.evaluate(test_predictions, Y_test)
             test_metrics_results.append((f"test_{str(metric)}", result))
 

@@ -36,7 +36,7 @@ class Artifact(BaseModel):
         if self.data is None:
             raise ValueError("No data available to read.")
         return self.data
-    
+
     def save(self, data: bytes) -> bytes:
         """Save the binary data of the artifact."""
         self.data = data
