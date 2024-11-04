@@ -22,10 +22,10 @@ dataset_file = st.file_uploader("Upload a dataset file", type=["csv"])
 if dataset_file is not None:
     # Read the CSV file into a DataFrame
     dataframe = pd.read_csv(dataset_file)
-    
+
     # Define a path for the dataset's asset (storage location)
     asset_path = f"{dataset_name}.csv"
-    
+
     # Create the Dataset artifact using from_dataframe
     dataset = Dataset.from_dataframe(
         data=dataframe,
@@ -33,7 +33,7 @@ if dataset_file is not None:
         name=dataset_name,  # Provide the name as required
         version="1.0.0",  # Specify version if required by Dataset
     )
-    
+
     # Save the dataset artifact using the AutoML system's artifact registry
     save_button = st.button("Save Dataset")
     if save_button:

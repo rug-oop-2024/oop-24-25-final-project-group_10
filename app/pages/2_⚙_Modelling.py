@@ -16,10 +16,6 @@ def write_helper_text(text: str):
 
 
 st.write("# ⚙ Modelling")
-write_helper_text(
-    "In this section, you can design a machine learning pipeline"
-    "to train a model on a dataset."
-)
 
 automl = AutoMLSystem.get_instance()
 
@@ -37,7 +33,9 @@ else:
                              if dataset.name == selected_dataset_name), None)
 
     if selected_dataset:
-        st.write(f"**Dataset:** {selected_dataset.name}", f"**Version:** {selected_dataset.version}", f"**path:** {selected_dataset.asset_path}")
+        st.write(f"**Dataset:** {selected_dataset.name}",
+                 f"**Version:** {selected_dataset.version}",
+                 f"**path:** {selected_dataset.asset_path}")
         st.write(f"**Version:** {selected_dataset.version}")
         st.write(f"**path:** {selected_dataset.asset_path}")
 
@@ -97,7 +95,7 @@ else:
             metric_names = metrics.CLASSIFICATION_METRICS
 
         selected_metrics = st.multiselect("Select metrics", metric_names)
-
+        model = ml_model.get_model(model_name)
         # Prompt the user with a beautifuly formatted pipeline.
         st.write("### Pipeline Summary")
         st.write("#### Configuration")
@@ -111,7 +109,6 @@ else:
         # Train the class and report the results of the pipeline.
         if st.button("Train"):
             st.write("Training the model...")
-            model = ml_model.get_model(model_name)
             model.fit(data_df[selected_input_features],
                       data_df[target_feature])
             for metric_name in selected_metrics:
@@ -122,3 +119,8 @@ else:
                 st.write(f"{metric_name}: {metric_value}")
 
             st.write("Training complete.")
+
+        # save the trained model
+        if st.button("Save Model"):
+            automl.registry.register(model.save())
+            st.write("Model saved successfully.")

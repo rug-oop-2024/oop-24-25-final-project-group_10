@@ -48,21 +48,17 @@ class Model(ABC):
         """
         pass
 
-    def save(self, path: str):
-        """Save the model as an artifact.
-
-        Args:
-            path (str): Path to save the model artifact.
+    def save(self):
         """
+        Save the model as an artifact.
+        """
+        if not self._is_fitted:
+            raise ValueError("Model must be fitted before saving.")
         self._artifact = Artifact(
-            asset_path=path,
-            version="1.0",
-            data=np.array(self._parameters["weights"]),
-            metadata={"model_type": self._type},
-            type=f"model:{self._type}",
-            tags=["machine_learning", "model"]
+            asset_path=f"models/{self._type}_model",
+            data=self._parameters["weights"]
         )
-        print(f"Model saved as artifact at {path}.")
+        return self._artifact
 
     def load(self, artifact: Artifact):
         """Load the model from an artifact.
