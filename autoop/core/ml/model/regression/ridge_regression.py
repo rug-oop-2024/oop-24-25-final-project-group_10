@@ -3,6 +3,9 @@ from autoop.core.ml.model.model import Model
 
 
 class RidgeRegression(Model):
+    """
+    A class to represent a Ridge regression model.
+    """
     def __init__(self, alpha=1.0):
         """
         Initializes the Ridge regression model with a regularization parameter.

@@ -23,6 +23,11 @@ CLASSIFICATION_MODELS = [
 
 
 def get_model(model_name: str) -> Model:
+    """
+    Returns a model object based on the name.
+    Args:
+        model_name (str): The name of the model.
+    """
     if model_name in REGRESSION_MODELS:
         if model_name == "multiple_linear_regression":
             return MultipleLinearRegression()

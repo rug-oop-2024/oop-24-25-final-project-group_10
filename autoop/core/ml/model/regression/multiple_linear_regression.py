@@ -3,6 +3,9 @@ from autoop.core.ml.model.model import Model
 
 
 class MultipleLinearRegression(Model):
+    """
+    A class to represent a Multiple Linear Regression model.
+    """
     def __init__(self):
         """
         Initializes the wrapper with a

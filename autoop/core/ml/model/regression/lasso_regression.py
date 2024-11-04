@@ -3,6 +3,9 @@ from sklearn.linear_model import Lasso
 
 
 class LassoRegression(Model):
+    """
+    A class to represent a Lasso regression model.
+    """
     def __init__(self, alpha=1.0):
         """
         Initializes the Lasso regression model with a regularization parameter.

@@ -4,12 +4,20 @@ import base64
 
 
 class Artifact(BaseModel):
+    """
+    A class to represent an artifact.
+    """
     name: str = Field(..., title="Name of the artifact")
     asset_path: str = Field(..., title="Path to the asset")
     version: str = Field(..., title="Version of the asset")
     data: Optional[bytes] = Field(None, title="Binary data of the asset")
-    metadata: Dict[str, Any] = Field({}, title="Additional metadata related to the asset")
-    type: str = Field(..., title="Type of the asset, e.g., 'model:torch', 'preprocessor:scaler'")
+    metadata: Dict[str, Any] = Field(
+        {}, title="Additional metadata related to the asset"
+    )
+    type: str = Field(
+        ...,
+        title="Type of the asset, e.g., 'model:torch', 'preprocessor:scaler'"
+    )
     tags: List[str] = Field([], title="Tags for categorization")
 
     def __init__(self, **kwargs):
@@ -27,7 +35,8 @@ class Artifact(BaseModel):
     def __str__(self) -> str:
         """String representation of the artifact."""
         return (
-            f"Artifact(name={self.name}, asset_path={self.asset_path}, version={self.version}, "
+            f"Artifact(name={self.name}, asset_path={self.asset_path}, "
+            f"version={self.version}, "
             f"type={self.type})"
         )
 
