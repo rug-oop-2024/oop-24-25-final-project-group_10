@@ -11,6 +11,7 @@ class MultipleLinearRegression(Model):
         Initializes the wrapper with a
         LinearRegression model from scikit-learn.
         """
+        super().__init__('regression')
         self._model = LinearRegression()
 
     def fit(self, X, y):
@@ -20,7 +21,11 @@ class MultipleLinearRegression(Model):
             X: Feature matrix (n_samples, n_features)
             y: Target vector (n_samples,)
         """
+        print("fit is called mf")
         self._model.fit(X, y)
+        self._parameters["weights"] = self._model.coef_
+        self._parameters["intercept"] = self._model.intercept_
+        self._is_fitted = True
 
     def predict(self, X):
         """Predicts the target values for given features.

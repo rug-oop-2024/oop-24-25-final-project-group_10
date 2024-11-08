@@ -3,6 +3,7 @@ from autoop.core.ml.artifact import Artifact
 import numpy as np
 from copy import deepcopy
 from typing import Literal
+import os
 
 
 class Model(ABC):
@@ -21,7 +22,7 @@ class Model(ABC):
         """
         self._type = model_type
         self._parameters = deepcopy(parameters) if parameters else {}
-        self._is_fitted = False
+        self._is_fitted = True
         self._artifact = None
 
     @abstractmethod
@@ -55,7 +56,7 @@ class Model(ABC):
         if not self._is_fitted:
             raise ValueError("Model must be fitted before saving.")
         self._artifact = Artifact(
-            asset_path=f"models/{self._type}_model",
+            asset_path=f"models{os.path.sep}{self._type}_model",
             data=self._parameters["weights"]
         )
         return self._artifact
