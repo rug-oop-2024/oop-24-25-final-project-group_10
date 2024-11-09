@@ -105,12 +105,11 @@ else:
         st.write(f"- **Model:** {model_name}")
         st.write(f"- **Split Type:** {split_type}")
         st.write(f"- **Metrics:** {', '.join(selected_metrics)}")
-
+        model.fit(data_df[selected_input_features],
+                  data_df[target_feature])
         # Train the class and report the results of the pipeline.
         if st.button("Train"):
             st.write("Training the model...")
-            model.fit(data_df[selected_input_features],
-                      data_df[target_feature])
             for metric_name in selected_metrics:
                 metric = metrics.get_metric(metric_name)
                 metric_value = metric(
@@ -120,7 +119,29 @@ else:
 
             st.write("Training complete.")
 
+        model_name = st.text_input("Model Name", value=model_name)
+        model_version = st.text_input("Model Version", value="1.0.0")
+
         # save the trained model
         if st.button("Save Model"):
-            automl.registry.register(model.save())
+            automl.registry.register(model.save(model_name, model_version))
             st.write("Model saved successfully.")
+        # display saved models and their weights
+        st.write("### Saved Models")
+        saved_models = automl.registry.list(type="model")
+
+        if len(saved_models) == 0:
+            st.write("No models saved yet.")
+        else:
+            for saved_model in saved_models:
+                st.write(f"**{saved_model.name}**",
+                         f"**Version:** {saved_model.version}",
+                         f"**path:** {saved_model.asset_path}")
+                st.write(f"**Version:** {saved_model.version}")
+                st.write(f"**path:** {saved_model.asset_path}")
+                model.load(saved_model)
+                st.write(f"**Model:** {model}")
+                st.write(f"**Parameters:** {model._parameters}")
+                st.write(f"**Is Fitted:** {model._is_fitted}")
+                st.write(f"**Artifact ID:** {saved_model.id}")
+                st.write(f"**Metadata:** {saved_model.data}")

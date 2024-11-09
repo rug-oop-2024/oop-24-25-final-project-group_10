@@ -3,7 +3,6 @@ from autoop.core.ml.artifact import Artifact
 import numpy as np
 from copy import deepcopy
 from typing import Literal
-import os
 
 
 class Model(ABC):
@@ -22,7 +21,7 @@ class Model(ABC):
         """
         self._type = model_type
         self._parameters = deepcopy(parameters) if parameters else {}
-        self._is_fitted = True
+        self._is_fitted = False
         self._artifact = None
 
     @abstractmethod
@@ -49,15 +48,18 @@ class Model(ABC):
         """
         pass
 
-    def save(self):
+    def save(self, model_name: str, model_version: str) -> Artifact:
         """
         Save the model as an artifact.
         """
         if not self._is_fitted:
             raise ValueError("Model must be fitted before saving.")
         self._artifact = Artifact(
-            asset_path=f"models{os.path.sep}{self._type}_model",
-            data=self._parameters["weights"]
+            name=model_name,
+            asset_path=f"models/{self._type}_model",
+            version=model_version,
+            type="model",
+            data=np.array(self._parameters["weights"]).tobytes(),
         )
         return self._artifact
 
@@ -68,7 +70,7 @@ class Model(ABC):
             artifact (Artifact): The artifact to load the model from.
         """
         self._artifact = deepcopy(artifact)
-        self._parameters["weights"] = artifact.data
+        self._parameters = {"weights": self._artifact.data}
         self._is_fitted = True
         print(f"Model loaded from artifact at {artifact.asset_path}.")
 
@@ -79,7 +81,4 @@ class Model(ABC):
     @property
     def parameters(self):
         """Returns the model's parameters (coefficients and intercept)."""
-        return {
-            "coefficients": self._model.coef_,
-            "intercept": self._model.intercept_
-        }
+        return self._parameters
