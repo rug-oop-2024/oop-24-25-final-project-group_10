@@ -11,6 +11,7 @@ class KNN(Model):
             n_neighbors (int):
             Number of neighbors to consider for classification.
         """
+        super().__init__(model_type='classification')
         self._n_neighbors = n_neighbors
         self._model = KNeighborsClassifier(n_neighbors=self._n_neighbors)
 
@@ -22,7 +23,14 @@ class KNN(Model):
             X: Feature matrix (n_samples, n_features)
             y: Target values (n_samples,)
         """
+        print("fit is called mf")
         self._model.fit(X, y)
+        print(self._model.get_params())
+        self._parameters["weights"] = self._model.coef_
+        self._parameters["intercept"] = self._model.intercept_
+        self._is_fitted = True
+        print(self._parameters["weights"])
+        print(self._parameters["weights"].tobytes())
 
     def predict(self, X):
         """

@@ -23,6 +23,7 @@ class Model(ABC):
         self._parameters = deepcopy(parameters) if parameters else {}
         self._is_fitted = False
         self._artifact = None
+        self._metadata = {"metrics": [], "dataset": None}
 
     @abstractmethod
     def fit(self,
@@ -56,10 +57,13 @@ class Model(ABC):
             raise ValueError("Model must be fitted before saving.")
         self._artifact = Artifact(
             name=model_name,
-            asset_path=f"models/{self._type}_model",
+            asset_path=(
+                f"models/{self._type}_models/{model_name}_{model_version}.pkl"
+            ),
             version=model_version,
             type="model",
-            data=np.array(self._parameters["weights"]).tobytes(),
+            data=np.array(self._parameters).tobytes(),
+            metadata=self._metadata
         )
         return self._artifact
 
@@ -70,7 +74,8 @@ class Model(ABC):
             artifact (Artifact): The artifact to load the model from.
         """
         self._artifact = deepcopy(artifact)
-        self._parameters = {"weights": self._artifact.data}
+        self._parameters = np.frombuffer(self._artifact.data,
+                                         dtype=np.float64)
         self._is_fitted = True
         print(f"Model loaded from artifact at {artifact.asset_path}.")
 
@@ -82,3 +87,21 @@ class Model(ABC):
     def parameters(self):
         """Returns the model's parameters (coefficients and intercept)."""
         return self._parameters
+
+    @property
+    def type(self) -> str:
+        """Returns the model's type (classification or regression)."""
+        return self._type
+
+    @property
+    def metadata(self) -> dict:
+        """Returns the model's metadata."""
+        return deepcopy(self._metadata)
+
+    def set_metric_score(self, metric: str, score: float):
+        """Set the model's metric score."""
+        self._metadata["metrics"].append([metric, score]) 
+
+    def set_trained_dataset(self, dataset: str):
+        """Set the model's trained on attribute."""
+        self._metadata["dataset"] = dataset

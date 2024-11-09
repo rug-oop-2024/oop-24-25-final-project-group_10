@@ -98,6 +98,8 @@ else:
         model = ml_model.get_model(model_name)
         # Prompt the user with a beautifuly formatted pipeline.
         st.write("### Pipeline Summary")
+        model_name = st.text_input("Model Name", value=model_name)
+        model_version = st.text_input("Model Version", value="1.0.0")
         st.write("#### Configuration")
         st.write(f"- **Dataset:** {selected_dataset.name}")
         st.write(f"- **Target Feature:** {target_feature}")
@@ -105,43 +107,23 @@ else:
         st.write(f"- **Model:** {model_name}")
         st.write(f"- **Split Type:** {split_type}")
         st.write(f"- **Metrics:** {', '.join(selected_metrics)}")
-        model.fit(data_df[selected_input_features],
-                  data_df[target_feature])
+
         # Train the class and report the results of the pipeline.
-        if st.button("Train"):
+        if st.button("Train And Save Model"):
             st.write("Training the model...")
+            model.fit(data_df[selected_input_features],
+                      data_df[target_feature])
             for metric_name in selected_metrics:
                 metric = metrics.get_metric(metric_name)
                 metric_value = metric(
                     data_df[target_feature],
                     model.predict(data_df[selected_input_features]))
+                model.set_metric_score(metric_name, metric_value)
+                model.set_trained_dataset(selected_dataset.name)
                 st.write(f"{metric_name}: {metric_value}")
 
             st.write("Training complete.")
 
-        model_name = st.text_input("Model Name", value=model_name)
-        model_version = st.text_input("Model Version", value="1.0.0")
-
-        # save the trained model
-        if st.button("Save Model"):
+            # save the trained model
             automl.registry.register(model.save(model_name, model_version))
             st.write("Model saved successfully.")
-        # display saved models and their weights
-        st.write("### Saved Models")
-        saved_models = automl.registry.list(type="model")
-
-        if len(saved_models) == 0:
-            st.write("No models saved yet.")
-        else:
-            for saved_model in saved_models:
-                st.write(f"**{saved_model.name}**",
-                         f"**Version:** {saved_model.version}",
-                         f"**path:** {saved_model.asset_path}")
-                st.write(f"**Version:** {saved_model.version}")
-                st.write(f"**path:** {saved_model.asset_path}")
-                model.load(saved_model)
-                st.write(f"**Model:** {model}")
-                st.write(f"**Parameters:** {model._parameters}")
-                st.write(f"**Is Fitted:** {model._is_fitted}")
-                st.write(f"**Artifact ID:** {saved_model.id}")
-                st.write(f"**Metadata:** {saved_model.data}")

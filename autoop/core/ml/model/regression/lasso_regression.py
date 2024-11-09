@@ -14,7 +14,8 @@ class LassoRegression(Model):
             alpha (float): Regularization strength. Must be a positive float.
             Larger values specify stronger regularization.
         """
-        self.model = Lasso(alpha=alpha)
+        super().__init__(model_type='regression')
+        self._model = Lasso(alpha=alpha)
 
     def fit(self, X, y):
         """Fits the Lasso regression model to the training data.
@@ -23,7 +24,13 @@ class LassoRegression(Model):
             X: Feature matrix (n_samples, n_features)
             y: Target vector (n_samples,)
         """
-        self.model.fit(X, y)
+        print("fit is called mf")
+        self._model.fit(X, y)
+        self._parameters["weights"] = self._model.coef_
+        self._parameters["intercept"] = self._model.intercept_
+        self._is_fitted = True
+        print(self._parameters["weights"])
+        print(self._parameters["weights"].tobytes())
 
     def predict(self, X):
         """Predicts the target values for given features.

@@ -11,7 +11,7 @@ class MultipleLinearRegression(Model):
         Initializes the wrapper with a
         LinearRegression model from scikit-learn.
         """
-        super().__init__(model_type="MLR")
+        super().__init__(model_type='multiple_linear_regression')
         self._model = LinearRegression()
 
     def fit(self, X, y):
