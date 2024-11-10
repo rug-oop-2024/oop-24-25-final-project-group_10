@@ -24,7 +24,7 @@ class KNN(Model):
             y: Target values (n_samples,)
         """
         self._model.fit(X, y)
-        self._parameters = self._model.get_params()
+        self._parameters = self._model.get_params(deep=True)
         self._is_fitted = True
 
     def predict(self, X):
@@ -37,4 +37,6 @@ class KNN(Model):
         Returns:
             np.ndarray: Predictions for the input data.
         """
+        if not self._is_fitted:
+            raise ValueError("Model is not fitted.")
         return self._model.predict(X)

@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from autoop.core.ml.artifact import Artifact
 import numpy as np
 from copy import deepcopy
+from sklearn.base import BaseEstimator
+import pickle
 
 
 class Model(ABC):
@@ -19,12 +21,16 @@ class Model(ABC):
             The model's parameters (weights, coefficients, etc.).
         """
         self._type = model_type
+        self._name = None
+        self._version = None
         self._parameters = deepcopy(parameters) if parameters else {}
         self._is_fitted = False
         self._artifact = None
         self._metadata = {"metrics": {},
                           "dataset": None,
-                          "type_of": self._type}
+                          "type_of": self._type,
+                          "target_feature": None,
+                          "features": None}
 
     @abstractmethod
     def fit(self,
@@ -52,10 +58,19 @@ class Model(ABC):
 
     def save(self, model_name: str, model_version: str) -> Artifact:
         """
-        Save the model as an artifact.
+        Save the model as an artifact with general support for sklearn models.
         """
         if not self._is_fitted:
             raise ValueError("Model must be fitted before saving.")
+
+        if isinstance(self._model, BaseEstimator):
+            self._parameters = {}
+            for attr in dir(self._model):
+                if not attr.startswith('_') and \
+                   not callable(getattr(self._model, attr)):
+                    self._parameters[attr] = getattr(self._model, attr)
+        serialized_params = pickle.dumps(self._parameters)
+
         self._artifact = Artifact(
             name=model_name,
             asset_path=(
@@ -63,20 +78,27 @@ class Model(ABC):
             ),
             version=model_version,
             type="model",
-            data=np.array(self._parameters).tobytes(),
+            data=serialized_params,
             metadata=self._metadata
         )
         return self._artifact
 
-    def load(self, artifact: Artifact):
-        """Load the model from an artifact.
-
-        Args:
-            artifact (Artifact): The artifact to load the model from.
-        """
+    def load(self, artifact):
+        """Load the model from an artifact."""
         self._artifact = deepcopy(artifact)
-        self._parameters = np.frombuffer(self._artifact.data, dtype=np.float64)
-        self._is_fitted = True
+        self._parameters = pickle.loads(self._artifact.data)
+        self._metadata = self._artifact.metadata
+
+        if isinstance(self._model, BaseEstimator):
+            for attr, value in self._parameters.items():
+                if hasattr(type(self._model), attr) and \
+                   isinstance(getattr(type(self._model), attr), property):
+                    continue
+                try:
+                    setattr(self._model, attr, value)
+                except AttributeError as e:
+                    print(f"Could not set attribute '{attr}': {e}")
+            self._is_fitted = True
 
     def __str__(self):
         """String representation of the model."""
@@ -104,3 +126,11 @@ class Model(ABC):
     def set_trained_dataset(self, dataset: str):
         """Set the model's trained on attribute."""
         self._metadata["dataset"] = dataset
+
+    def set_target_feature(self, target_feature: str):
+        """Set the model's target feature."""
+        self._metadata["target_feature"] = target_feature
+
+    def set_features(self, features: list):
+        """Set the model's trained on features."""
+        self._metadata["features"] = features

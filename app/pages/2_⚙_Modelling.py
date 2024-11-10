@@ -19,7 +19,8 @@ def write_helper_text(text: str):
 def display_datasets(datasets: object) -> object:
     """Display dataset selection and information."""
     dataset_names = [dataset.name for dataset in datasets]
-    selected_dataset_name = st.selectbox("Select a dataset", dataset_names)
+    selected_dataset_name = st.selectbox("Select a dataset", [""]
+                                         + dataset_names)
     selected_dataset = next(
         (dataset for dataset in datasets
          if dataset.name == selected_dataset_name),
@@ -33,7 +34,17 @@ def display_datasets(datasets: object) -> object:
 
 
 def load_dataset(selected_dataset: object) -> pd.DataFrame:
-    """Load the selected dataset into a DataFrame."""
+    """
+    Load the selected dataset into a DataFrame.
+
+    parameters:
+        selected_dataset: object
+            The selected dataset artifact.
+
+    returns:
+        pd.DataFrame
+            The dataset as a DataFrame.
+    """
     data_df = selected_dataset.read()
     if isinstance(data_df, bytes):
         decoded_data = data_df.decode('utf-8')
@@ -45,7 +56,13 @@ def load_dataset(selected_dataset: object) -> pd.DataFrame:
 
 
 def display_features(selected_dataset):
-    """Detect and display features in the dataset."""
+    """
+    Detect and display features in the dataset.
+
+    parameters:
+        selected_dataset: object
+            The selected dataset artifact.
+    """
     features = detect_feature_types(selected_dataset)
     st.write("### Features")
     st.write("The following features have been detected in the dataset:")
@@ -55,23 +72,32 @@ def display_features(selected_dataset):
 
 
 def select_model(features: dict, target_feature: str) -> tuple:
-    """Allow user to select model type and specific model."""
-    model_types = (
-        ["Classification"]
+    """
+    Allow user to select model type and specific model.
+
+    parameters:
+        features: dict
+            The features in the dataset.
+        target_feature: str
+            The target feature for the model.
+    """
+    model_type = (
+        "Classification"
         if any(
             feature.name == target_feature and feature.type == "categorical"
             for feature in features
         )
-        else ["Regression", "Classification"]
+        else "Regression"
     )
-    model_type = st.selectbox("Select a model type", model_types)
+    st.write("### Model Selection")
+    st.write(f"**Model Type:** {model_type}")
 
     model_names = (
         ml_model.CLASSIFICATION_MODELS
         if model_type == "Classification"
         else ml_model.REGRESSION_MODELS
     )
-    model_name = st.selectbox("Select a model", model_names)
+    model_name = st.selectbox("Select a model", [""] + model_names)
     return model_type, model_name
 
 
@@ -82,7 +108,21 @@ def display_pipeline_summary(
     model_name: str,
         selected_metrics: list | None) -> tuple:
 
-    """Display a summary of the pipeline configuration."""
+    """
+    Display a summary of the pipeline configuration.
+
+    parameters:
+        selected_dataset: object
+            The selected dataset artifact.
+        target_feature: str
+            The target feature for the model.
+        selected_input_features: list
+            The input features for the model.
+        model_name: str
+            The name of the model.
+        selected_metrics: list
+            The metrics to evaluate the model.
+    """
     st.write("### Pipeline Summary")
     model_name = st.text_input("Model Name", value=model_name)
     model_version = st.text_input("Model Version", value="1.0.0")
@@ -106,15 +146,39 @@ def train_and_save_model(
     custom_name: str,
         model_version: str) -> None:
 
-    """Train and save the model, displaying metric results."""
+    """
+    Train and save the model, displaying metric results.
+
+    parameters:
+        model: object
+            The model to train.
+        data_df: pd.DataFrame
+            The dataset to train the model on.
+        selected_input_features: list
+            The input features for the model.
+        target_feature: str
+            The target feature for the model.
+        selected_metrics: list
+            The metrics to evaluate the model.
+        selected_dataset: object
+            The dataset the model is trained on.
+        custom_name: str
+            The custom name for the model.
+        model_version: str
+            The version of the model.
+    """
     st.write("Training the model...")
     model.fit(data_df[selected_input_features], data_df[target_feature])
+
+    model.set_trained_dataset(selected_dataset.name)
+    model.set_target_feature(target_feature)
+    model.set_features(selected_input_features)
+
     for metric_name in selected_metrics:
         metric = metrics.get_metric(metric_name)
         metric_value = metric(data_df[target_feature],
                               model.predict(data_df[selected_input_features]))
         model.set_metric_score(metric_name, metric_value)
-        model.set_trained_dataset(selected_dataset.name)
         st.write(f"{metric_name}: {metric_value}")
 
     st.write("Training complete.")
@@ -146,39 +210,40 @@ def main() -> None:
 
         selected_input_features = st.multiselect("Select the input features",
                                                  input_features)
+        if selected_input_features:
+            # Model selection
+            model_type, model_name = select_model(features, target_feature)
 
-        # Model selection
-        model_type, model_name = select_model(features, target_feature)
+            if model_name:
+                # Metric selection
+                st.write("### Metrics")
+                metric_names = (
+                    metrics.CLASSIFICATION_METRICS
+                    if model_type == "Classification"
+                    else metrics.REGRESSION_METRICS
+                )
+                selected_metrics = st.multiselect("Select metrics",
+                                                  metric_names)
+                # Pipeline summary
+                custom_name, model_version = display_pipeline_summary(
+                    selected_dataset,
+                    target_feature,
+                    selected_input_features,
+                    model_name,
+                    selected_metrics
+                )
 
-        # Metric selection
-        st.write("### Metrics")
-        metric_names = (
-            metrics.CLASSIFICATION_METRICS
-            if model_type == "Classification"
-            else metrics.REGRESSION_METRICS
-        )
-        selected_metrics = st.multiselect("Select metrics", metric_names)
-
-        # Pipeline summary
-        custom_name, model_version = display_pipeline_summary(
-            selected_dataset,
-            target_feature,
-            selected_input_features,
-            model_name,
-            selected_metrics
-        )
-
-        # Train and save model
-        model = ml_model.get_model(model_name)
-        if st.button("Train And Save Model"):
-            train_and_save_model(model,
-                                 data_df,
-                                 selected_input_features,
-                                 target_feature,
-                                 selected_metrics,
-                                 selected_dataset,
-                                 custom_name,
-                                 model_version)
+                # Train and save model
+                model = ml_model.get_model(model_name)
+                if st.button("Train And Save Model"):
+                    train_and_save_model(model,
+                                         data_df,
+                                         selected_input_features,
+                                         target_feature,
+                                         selected_metrics,
+                                         selected_dataset,
+                                         custom_name,
+                                         model_version)
 
 
 if __name__ == "__main__":

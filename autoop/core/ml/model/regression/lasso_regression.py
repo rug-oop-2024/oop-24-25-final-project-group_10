@@ -38,4 +38,4 @@ class LassoRegression(Model):
         Returns:
             np.ndarray: Predictions for the input data.
         """
-        return self.model.predict(X)
+        return self._model.predict(X)

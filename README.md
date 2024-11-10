@@ -95,11 +95,11 @@ E.g. docs/decisions/DSC-0001-use-typescript.md
 Some examples include housing prices, second-hand cars, etc.
 
 ### Checklist
-- [ ] I have read the instructions carefully.
-- [ ] I have filled my personal rubric.
-- [ ] The code is refactored to style standards.
-- [ ] I have passed my tests.
-- [ ] I have documented my code and decisions.
+- [X] I have read the instructions carefully.
+- [X] I have filled my personal rubric.
+- [X] The code is refactored to style standards.
+- [X] I have passed my tests.
+- [X] I have documented my code and decisions.
 
 # Grading & Submission (IMPORTANT)
 
@@ -153,7 +153,7 @@ If you did not implement the feature
 
 | Requirement                           | Type (FN/NF) | Implemented by       | Implementation Completed (add X if done) | Comment |
 |-------------------------------------- |--------------|----------------------|--------------------------|---------|         
-| Up-to-date requirements.txt           | NF           |                      |         | |
+| Up-to-date requirements.txt           | NF           |Both                      |X         | |
 | `ML/detect-features`                  | FN           |Both                      |X         | |
 | `ML/artifact`                         | NF           |Both                      |X         | |
 | `ML/feature`                          | NF           |Both                      |X         | |
@@ -172,13 +172,13 @@ If you did not implement the feature
 | `ST/modelling/pipeline/split`         | FN           |Both                      |X         | |
 | `ST/modelling/pipeline/metrics`       | FN           |Both                      |X         | |
 | `ST/modelling/pipeline/summary`       | FN           |Both                      |X         | |
-| `ST/modelling/pipeline/train`         | FN           |Almost complete classification metrics are wrong                      |         | |
+| `ST/modelling/pipeline/train`         | FN           |Both                      |X         | |
 | `ST/modelling/pipeline/save`          | FN           |Both                      |X         | |
 | `ST/page/deployment`                  | FN           |Both                      |X         | |
 | `ST/deployment/load`                  | FN           |Both                      |X         | |
-| `ST/deployment/predict`               | FN           |Both                      |         | |
+| `ST/deployment/predict`               | FN           |Both                      |X         | |
 
 If you add extra features, please indicate them below:
 | Requirement                           | Type (FN/NF) | Implemented by       | Implementation Completed (add X if done) | Comment |
 |-------------------------------------- |--------------|----------------------|---------|-----|
-|           |            |                      |         | |
+|implementation of a custom dataset inside of streamlit           |both            |X                      |         | |

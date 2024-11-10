@@ -187,14 +187,22 @@ class Precision(Metric):
         Returns:
             float: The calculated precision value.
         """
-        true_positive = np.sum((ground_truth == 1) & (prediction == 1))
-        false_positive = np.sum((ground_truth == 0) & (prediction == 1))
-        denominator = true_positive + false_positive
+        class_labels = np.unique(ground_truth)
+        precisions = []
+        for class_label in class_labels:
+            true_positive = np.sum((ground_truth == class_label) &
+                                   (prediction == class_label))
+            false_positive = np.sum((ground_truth != class_label) &
+                                    (prediction == class_label))
 
-        if denominator == 0:
-            return 0.0
+            denominator = true_positive + false_positive
+            if denominator == 0:
+                precisions.append(0.0)
+            else:
+                precisions.append(true_positive / denominator)
 
-        return true_positive / denominator
+        macro_precision = np.mean(precisions)
+        return macro_precision
 
 
 class Recall(Metric):
@@ -216,11 +224,17 @@ class Recall(Metric):
         Returns:
             float: The calculated recall value.
         """
-        true_positive = np.sum((ground_truth == 1) & (prediction == 1))
-        false_negative = np.sum((ground_truth == 1) & (prediction == 0))
-        denominator = true_positive + false_negative
-
-        if denominator == 0:
-            return 0.0
-
-        return true_positive / denominator
+        class_labels = np.unique(ground_truth)
+        recalls = []
+        for class_label in class_labels:
+            true_positive = np.sum((ground_truth == class_label) &
+                                   (prediction == class_label))
+            false_negative = np.sum((ground_truth == class_label) &
+                                    (prediction != class_label))
+            denominator = true_positive + false_negative
+            if denominator == 0:
+                recalls.append(0.0)
+            else:
+                recalls.append(true_positive / denominator)
+        macro_recall = np.mean(recalls)
+        return macro_recall
