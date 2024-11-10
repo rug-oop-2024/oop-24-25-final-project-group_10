@@ -21,8 +21,11 @@ class Pipeline():
                  model: Model,
                  input_features: List[Feature],
                  target_feature: Feature,
-                 split=0.8,
+                 split: float = 0.8,
                  ) -> None:
+        """
+        Initialize the pipeline.
+        """
         self._dataset = dataset
         self._model = model
         self._input_features = input_features
@@ -42,6 +45,9 @@ class Pipeline():
             )
 
     def __str__(self) -> str:
+        """
+        String representation of the pipeline
+        """
         return f"""
             Pipeline(
             model={self._model.type},
@@ -53,7 +59,7 @@ class Pipeline():
         """
 
     @property
-    def model(self):
+    def model(self) -> Model:
         """
         Getter for the model
         """
@@ -90,7 +96,7 @@ class Pipeline():
             self._model.to_artifact(name=f"pipeline_model_{self._model.type}"))
         return artifacts
 
-    def _register_artifact(self, name: str, artifact) -> None:
+    def _register_artifact(self, name: str, artifact: Artifact) -> None:
         """
         Register an artifact generated during the pipeline execution
 

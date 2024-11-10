@@ -1,9 +1,13 @@
 from autoop.core.ml.model.model import Model
 from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
 
 
 class KNN(Model):
-    def __init__(self, n_neighbors=5):
+    """
+    KNN model for classification tasks.
+    """
+    def __init__(self, n_neighbors: int = 5) -> None:
         """
         Initializes the KNN model with the number of neighbors.
 
@@ -15,7 +19,7 @@ class KNN(Model):
         self._n_neighbors = n_neighbors
         self._model = KNeighborsClassifier(n_neighbors=self._n_neighbors)
 
-    def fit(self, X, y):
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """
         Fits the KNN model to the training data.
 
@@ -27,7 +31,7 @@ class KNN(Model):
         self._parameters = self._model.get_params(deep=True)
         self._is_fitted = True
 
-    def predict(self, X):
+    def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Predicts the target values for given features.
 

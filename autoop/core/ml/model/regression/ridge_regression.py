@@ -1,12 +1,13 @@
 from sklearn.linear_model import Ridge
 from autoop.core.ml.model.model import Model
+import numpy as np
 
 
 class RidgeRegression(Model):
     """
     A class to represent a Ridge regression model.
     """
-    def __init__(self, alpha=1.0):
+    def __init__(self, alpha: float = 1.0) -> None:
         """
         Initializes the Ridge regression model with a regularization parameter.
 
@@ -17,7 +18,7 @@ class RidgeRegression(Model):
         super().__init__(model_type='ridge_regression')
         self._model = Ridge(alpha=alpha)
 
-    def fit(self, X, y):
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """Fits the Ridge regression model to the training data.
 
         Args:
@@ -29,7 +30,7 @@ class RidgeRegression(Model):
         self._parameters["intercept"] = self._model.intercept_
         self._is_fitted = True
 
-    def predict(self, X):
+    def predict(self, X: np.ndarray) -> np.ndarray:
         """Predicts the target values for given features.
 
         Args:

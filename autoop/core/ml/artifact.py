@@ -20,7 +20,10 @@ class Artifact(BaseModel):
     )
     tags: List[str] = Field([], title="Tags for categorization")
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
+        """
+        Initializes the Artifact object.
+        """
         super().__init__(**kwargs)
 
     @property

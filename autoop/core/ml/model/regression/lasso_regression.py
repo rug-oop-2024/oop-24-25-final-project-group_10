@@ -1,12 +1,13 @@
 from autoop.core.ml.model.model import Model
 from sklearn.linear_model import Lasso
+import numpy as np
 
 
 class LassoRegression(Model):
     """
     A class to represent a Lasso regression model.
     """
-    def __init__(self, alpha=1.0):
+    def __init__(self, alpha: float = 1.0) -> None:
         """
         Initializes the Lasso regression model with a regularization parameter.
 
@@ -17,7 +18,7 @@ class LassoRegression(Model):
         super().__init__(model_type='lasso_regression')
         self._model = Lasso(alpha=alpha)
 
-    def fit(self, X, y):
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """Fits the Lasso regression model to the training data.
 
         Args:
@@ -29,7 +30,7 @@ class LassoRegression(Model):
         self._parameters["intercept"] = self._model.intercept_
         self._is_fitted = True
 
-    def predict(self, X):
+    def predict(self, X: np.ndarray) -> np.ndarray:
         """Predicts the target values for given features.
 
         Args:

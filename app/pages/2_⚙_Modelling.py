@@ -12,15 +12,18 @@ st.set_page_config(page_title="Modelling", page_icon="📈")
 automl = AutoMLSystem.get_instance()
 
 
-def write_helper_text(text: str):
+def write_helper_text(text: str) -> None:
+    """
+    Display helper text with a custom style.
+    """
     st.write(f"<p style=\"color: #888;\">{text}</p>", unsafe_allow_html=True)
 
 
 def display_datasets(datasets: object) -> object:
     """Display dataset selection and information."""
     dataset_names = [dataset.name for dataset in datasets]
-    selected_dataset_name = st.selectbox("Select a dataset", [""]
-                                         + dataset_names)
+    selected_dataset_name = st.selectbox("Select a dataset", [""] +
+                                         dataset_names)
     selected_dataset = next(
         (dataset for dataset in datasets
          if dataset.name == selected_dataset_name),
@@ -55,7 +58,7 @@ def load_dataset(selected_dataset: object) -> pd.DataFrame:
     return data_df
 
 
-def display_features(selected_dataset):
+def display_features(selected_dataset: object) -> list:
     """
     Detect and display features in the dataset.
 
@@ -187,6 +190,7 @@ def train_and_save_model(
 
 
 def main() -> None:
+    """Main function for the Modelling page."""
     st.write("# ⚙ Modelling")
     automl = AutoMLSystem.get_instance()
     datasets = automl.registry.list(type="dataset")

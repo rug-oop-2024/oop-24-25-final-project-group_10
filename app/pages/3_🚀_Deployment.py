@@ -5,18 +5,19 @@ from io import StringIO
 from app.core.system import AutoMLSystem
 import autoop.core.ml.model as ml_model
 from autoop.functional.feature import detect_feature_types
+from autoop.core.ml.dataset import Dataset
 
 st.set_page_config(page_title="Deployment", page_icon="📈")
 
 automl = AutoMLSystem.get_instance()
 
 
-def write_helper_text(text: str):
+def write_helper_text(text: str) -> None:
     """Display helper text with a custom style."""
     st.write(f"<p style=\"color: #888;\">{text}</p>", unsafe_allow_html=True)
 
 
-def display_model_selection(models):
+def display_model_selection(models: list) -> object:
     """
     Display a selection box for available models.
 
@@ -30,7 +31,8 @@ def display_model_selection(models):
                  if model.name == model_artifact_name), None)
 
 
-def load_and_display_model_summary(model_artifact, model):
+def load_and_display_model_summary(model_artifact: object,
+                                   model: object) -> None:
     """
     Load the model and display its summary.
 
@@ -66,8 +68,8 @@ def select_dataset(datasets: list) -> object:
             A list of dataset artifacts.
     """
     dataset_names = [dataset.name for dataset in datasets]
-    selected_dataset_name = st.selectbox("Select a dataset", [""]
-                                         + dataset_names)
+    selected_dataset_name = st.selectbox(
+        "Select a dataset", [""] + dataset_names)
     selected_dataset = next(
         (dataset for dataset in datasets
          if dataset.name == selected_dataset_name),
@@ -76,7 +78,7 @@ def select_dataset(datasets: list) -> object:
     return selected_dataset
 
 
-def load_dataset(selected_dataset: object) -> pd.DataFrame:
+def load_dataset(selected_dataset: Dataset) -> pd.DataFrame:
     """
     Load the selected dataset into a DataFrame.
 
@@ -94,7 +96,7 @@ def load_dataset(selected_dataset: object) -> pd.DataFrame:
     return data_df
 
 
-def display_features(selected_dataset):
+def display_features(selected_dataset: Dataset) -> list:
     """
     Detect and display features in the dataset.
 
@@ -149,7 +151,7 @@ def select_features(model_features: list, data_features: list) -> list:
     return valid_selected_features
 
 
-def deploy_model(model: object, dataset: pd.DataFrame, features: list):
+def deploy_model(model: object, dataset: pd.DataFrame, features: list) -> None:
     """
     Deploy the selected model with the matched features.
 
@@ -174,7 +176,8 @@ def deploy_model(model: object, dataset: pd.DataFrame, features: list):
     st.write(table)
 
 
-def main():
+def main() -> None:
+    """Main function for the Deployment page."""
     st.write("# 🚀 Deployment")
     automl = AutoMLSystem.get_instance()
     models = automl.registry.list(type="model")

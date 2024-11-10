@@ -11,7 +11,7 @@ class ArtifactRegistry():
     """
     def __init__(self,
                  database: Database,
-                 storage: Storage):
+                 storage: Storage) -> None:
         """
         Initializes the artifact registry with a database and storage.
         Args:
@@ -21,7 +21,7 @@ class ArtifactRegistry():
         self._database = database
         self._storage = storage
 
-    def register(self, artifact: Artifact):
+    def register(self, artifact: Artifact) -> None:
         """
         Registers an artifact in the registry.
         Args:
@@ -45,6 +45,9 @@ class ArtifactRegistry():
         Lists all artifacts in the registry.
         Args:
             type (str, optional): The type of artifacts to list.
+
+        Returns:
+            List[Artifact]: A list of artifacts.
         """
         entries = self._database.list("artifacts")
         artifacts = []
@@ -68,6 +71,8 @@ class ArtifactRegistry():
         Gets an artifact from the registry.
         Args:
             artifact_id (str): The ID of the artifact to get.
+        Returns:
+            Artifact: The artifact.
         """
         data = self._database.get("artifacts", artifact_id)
         return Artifact(
@@ -80,7 +85,7 @@ class ArtifactRegistry():
             type=data["type"],
         )
 
-    def delete(self, artifact_id: str):
+    def delete(self, artifact_id: str) -> None:
         """
         Deletes an artifact from the registry.
         Args:
@@ -97,7 +102,7 @@ class AutoMLSystem:
     """
     _instance = None
 
-    def __init__(self, storage: LocalStorage, database: Database):
+    def __init__(self, storage: LocalStorage, database: Database) -> None:
         """
         Initializes the AutoML system with a storage and database.
         Args:
@@ -109,9 +114,12 @@ class AutoMLSystem:
         self._registry = ArtifactRegistry(database, storage)
 
     @staticmethod
-    def get_instance():
+    def get_instance() -> "AutoMLSystem":
         """
         Gets the singleton instance of the AutoML system.
+
+        Returns:
+            AutoMLSystem: The AutoML system instance.
         """
         if AutoMLSystem._instance is None:
             AutoMLSystem._instance = AutoMLSystem(
@@ -124,5 +132,11 @@ class AutoMLSystem:
         return AutoMLSystem._instance
 
     @property
-    def registry(self):
+    def registry(self) -> ArtifactRegistry:
+        """
+        Getter for the artifact registry.
+        
+        Returns:
+            ArtifactRegistry: The artifact registry.
+        """
         return self._registry

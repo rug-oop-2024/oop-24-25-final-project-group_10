@@ -1,19 +1,20 @@
 from autoop.core.ml.model.model import Model
 from sklearn.ensemble import RandomForestClassifier
+import numpy as np
 
 
 class RandomForestClassModel(Model):
     """
     Random Forest Classifier model
     """
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialize the Random Forest Classifier model.
         """
         super().__init__(model_type='RandomForestClassModel')
         self._model = RandomForestClassifier()
 
-    def fit(self, X, y):
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """
         Fits the Random Forest Classifier model to the training data.
         """
@@ -21,7 +22,7 @@ class RandomForestClassModel(Model):
         self._parameters = self._model.get_params()
         self._is_fitted = True
 
-    def predict(self, X):
+    def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Predicts the target values for given features.
 

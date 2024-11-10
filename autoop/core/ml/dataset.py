@@ -8,7 +8,7 @@ class Dataset(Artifact):
     A class to represent a dataset artifact.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """
         Initializes the Dataset object.
         """
@@ -18,7 +18,7 @@ class Dataset(Artifact):
     def from_dataframe(data: pd.DataFrame,
                        name: str,
                        asset_path: str,
-                       version: str = "1.0.0"):
+                       version: str = "1.0.0") -> Artifact:
         """
         Creates a Dataset object from a pandas DataFrame.
         Args:

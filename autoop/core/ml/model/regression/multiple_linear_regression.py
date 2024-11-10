@@ -1,12 +1,13 @@
 from sklearn.linear_model import LinearRegression
 from autoop.core.ml.model.model import Model
+import numpy as np
 
 
 class MultipleLinearRegression(Model):
     """
     A class to represent a Multiple Linear Regression model.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initializes the wrapper with a
         LinearRegression model from scikit-learn.
@@ -14,7 +15,7 @@ class MultipleLinearRegression(Model):
         super().__init__(model_type='multiple_linear_regression')
         self._model = LinearRegression()
 
-    def fit(self, X, y):
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """Fits the model to the training data.
 
         Args:
@@ -26,7 +27,7 @@ class MultipleLinearRegression(Model):
         self._parameters["intercept"] = self._model.intercept_
         self._is_fitted = True
 
-    def predict(self, X):
+    def predict(self, X: np.ndarray) -> np.ndarray:
         """Predicts the target values for given features.
 
         Args:

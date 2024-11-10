@@ -8,7 +8,7 @@ class NotFoundError(Exception):
     """
     Exception raised when a path is not found
     """
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         """
         Initialize a NotFoundError object
         Args:
@@ -18,9 +18,12 @@ class NotFoundError(Exception):
 
 
 class Storage(ABC):
+    """
+    Abstract class for storage
+    """
 
     @abstractmethod
-    def save(self, data: bytes, path: str):
+    def save(self, data: bytes, path: str) -> None:
         """
         Save data to a given path
         Args:
@@ -41,7 +44,7 @@ class Storage(ABC):
         pass
 
     @abstractmethod
-    def delete(self, path: str):
+    def delete(self, path: str) -> None:
         """
         Delete data at a given path
         Args:
@@ -62,8 +65,11 @@ class Storage(ABC):
 
 
 class LocalStorage(Storage):
+    """
+    Local storage implementation
+    """
 
-    def __init__(self, base_path: str = "./assets"):
+    def __init__(self, base_path: str = "./assets") -> None:
         """
         Initialize a LocalStorage object
         Args:
@@ -73,7 +79,7 @@ class LocalStorage(Storage):
         if not os.path.exists(self._base_path):
             os.makedirs(self._base_path)
 
-    def save(self, data: bytes, key: str):
+    def save(self, data: bytes, key: str) -> None:
         """
         Save data to a given path
         Args:
@@ -99,7 +105,7 @@ class LocalStorage(Storage):
         with open(path, 'rb') as f:
             return f.read()
 
-    def delete(self, key: str = "/"):
+    def delete(self, key: str = "/") -> None:
         """
         Delete data at a given path
         Args:
@@ -124,7 +130,7 @@ class LocalStorage(Storage):
         return [os.path.relpath(p, self._base_path) for p in keys
                 if os.path.isfile(p)]
 
-    def _assert_path_exists(self, path: str):
+    def _assert_path_exists(self, path: str) -> None:
         """
         Assert that a path exists
         Args:

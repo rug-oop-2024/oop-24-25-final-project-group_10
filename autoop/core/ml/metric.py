@@ -15,7 +15,7 @@ CLASSIFICATION_METRICS = [
 # add the names (in strings) of the metrics you implement
 
 
-def get_metric(name: str):
+def get_metric(name: str) -> object:
     """Returns a metric object based on the name.
 
     Args:
@@ -190,10 +190,10 @@ class Precision(Metric):
         class_labels = np.unique(ground_truth)
         precisions = []
         for class_label in class_labels:
-            true_positive = np.sum((ground_truth == class_label) &
-                                   (prediction == class_label))
-            false_positive = np.sum((ground_truth != class_label) &
-                                    (prediction == class_label))
+            true_positive = np.sum(
+                (ground_truth == class_label) & (prediction == class_label))
+            false_positive = np.sum(
+                (ground_truth != class_label) & (prediction == class_label))
 
             denominator = true_positive + false_positive
             if denominator == 0:
@@ -227,10 +227,10 @@ class Recall(Metric):
         class_labels = np.unique(ground_truth)
         recalls = []
         for class_label in class_labels:
-            true_positive = np.sum((ground_truth == class_label) &
-                                   (prediction == class_label))
-            false_negative = np.sum((ground_truth == class_label) &
-                                    (prediction != class_label))
+            true_positive = np.sum(
+                (ground_truth == class_label) & (prediction == class_label))
+            false_negative = np.sum(
+                (ground_truth == class_label) & (prediction != class_label))
             denominator = true_positive + false_negative
             if denominator == 0:
                 recalls.append(0.0)
