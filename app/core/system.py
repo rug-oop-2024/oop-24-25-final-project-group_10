@@ -135,7 +135,7 @@ class AutoMLSystem:
     def registry(self) -> ArtifactRegistry:
         """
         Getter for the artifact registry.
-        
+
         Returns:
             ArtifactRegistry: The artifact registry.
         """

@@ -1,3 +1,7 @@
+"""
+Contains the matching model classes for regression and classification.
+"""
+
 from autoop.core.ml.model.model import Model
 from autoop.core.ml.model.regression import MultipleLinearRegression
 from autoop.core.ml.model.regression import RidgeRegression
