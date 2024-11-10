@@ -13,6 +13,8 @@ class MultipleLinearRegression(Model):
         """
         super().__init__(model_type='multiple_linear_regression')
         self._model = LinearRegression()
+        if self._is_fitted:
+            self._model.set_params(**self._parameters)
 
     def fit(self, X, y):
         """Fits the model to the training data.
@@ -21,13 +23,10 @@ class MultipleLinearRegression(Model):
             X: Feature matrix (n_samples, n_features)
             y: Target vector (n_samples,)
         """
-        print("fit is called mf")
         self._model.fit(X, y)
         self._parameters["weights"] = self._model.coef_
         self._parameters["intercept"] = self._model.intercept_
         self._is_fitted = True
-        print(self._parameters["weights"])
-        print(self._parameters["weights"].tobytes())
 
     def predict(self, X):
         """Predicts the target values for given features.

@@ -10,20 +10,16 @@ class RandomForestClassModel(Model):
         """
         Initialize the Random Forest Classifier model.
         """
-        super().__init__(model_type='classification')
+        super().__init__(model_type='RandomForestClassModel')
         self._model = RandomForestClassifier()
 
     def fit(self, X, y):
         """
         Fits the Random Forest Classifier model to the training data.
         """
-        print("fit is called mf")
         self._model.fit(X, y)
-        self._parameters["weights"] = self._model.coef_
-        self._parameters["intercept"] = self._model.intercept_
+        self._parameters = self._model.get_params()
         self._is_fitted = True
-        print(self._parameters["weights"])
-        print(self._parameters["weights"].tobytes())
 
     def predict(self, X):
         """

@@ -2,14 +2,13 @@ from abc import ABC, abstractmethod
 from autoop.core.ml.artifact import Artifact
 import numpy as np
 from copy import deepcopy
-from typing import Literal
 
 
 class Model(ABC):
     """Abstract base class for machine learning models."""
 
     def __init__(self,
-                 model_type: Literal['classification', 'regression'],
+                 model_type: str,
                  parameters: dict = None):
         """Initialize the base model.
 
@@ -23,7 +22,9 @@ class Model(ABC):
         self._parameters = deepcopy(parameters) if parameters else {}
         self._is_fitted = False
         self._artifact = None
-        self._metadata = {"metrics": [], "dataset": None}
+        self._metadata = {"metrics": {},
+                          "dataset": None,
+                          "type_of": self._type}
 
     @abstractmethod
     def fit(self,
@@ -74,10 +75,8 @@ class Model(ABC):
             artifact (Artifact): The artifact to load the model from.
         """
         self._artifact = deepcopy(artifact)
-        self._parameters = np.frombuffer(self._artifact.data,
-                                         dtype=np.float64)
+        self._parameters = np.frombuffer(self._artifact.data, dtype=np.float64)
         self._is_fitted = True
-        print(f"Model loaded from artifact at {artifact.asset_path}.")
 
     def __str__(self):
         """String representation of the model."""
@@ -100,7 +99,7 @@ class Model(ABC):
 
     def set_metric_score(self, metric: str, score: float):
         """Set the model's metric score."""
-        self._metadata["metrics"].append([metric, score]) 
+        self._metadata["metrics"][metric] = score
 
     def set_trained_dataset(self, dataset: str):
         """Set the model's trained on attribute."""
